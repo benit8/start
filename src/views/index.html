@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Startpage</title>
+
+	<link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+	<div class="cols">
+		<div class="rows">
+			<div id="bookshelf" class="widget"></div>
+			<div id="powerline" class="widget">
+				<div id="tabs"></div>
+				<div id="applets"></div>
+			</div>
+		</div>
+		<div id="todo-list" class="widget">
+			<button id="add">+</button>
+			<input type="text" id="input" placeholder="New task..." autocomplete="off" spellcheck="false" />
+			<div id="tasks"></div>
+		</div>
+	</div>
+
+	<script src="bundle.js" defer></script>
+</body>
+</html>

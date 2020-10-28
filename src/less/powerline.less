@@ -1,0 +1,58 @@
+#powerline {
+	justify-content: space-between;
+	height: 30px;
+	color: darken(@body-color, 26.5%);
+
+	#tabs {
+		counter-reset: tabs;
+
+		span {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			width: 35px;
+			padding: 6px 0;
+			font-size: 13px;
+			font-weight: 400;
+			transition: font-size .1s;
+
+			&:not(.active) {
+				cursor: pointer;
+
+				&:hover {
+					background-color: lighten(@widget-bg, 10%);
+				}
+			}
+
+			&::after {
+				content: counter(tabs, cjk-ideographic);
+				counter-increment: tabs;
+			}
+
+			&.active {
+				cursor: unset;
+				font-size: 16px;
+				font-weight: 700;
+				color: @body-color;
+			}
+		}
+	}
+
+	#applets {
+		height: 100%;
+		font-size: 12px;
+
+		& > div, .applet {
+			justify-content: center;
+			align-items: center;
+
+			height: 100%;
+			padding: 0 12px;
+
+			background-color: @applet-bg;
+			border-left: inset 1px @applet-border;
+
+			img { height: 100%; }
+		}
+	}
+}
