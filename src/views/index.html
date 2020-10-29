@@ -8,20 +8,20 @@
 	<link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body>
-	<div class="cols">
-		<div class="rows">
+	<main>
+		<section>
 			<div id="bookshelf" class="widget"></div>
 			<div id="powerline" class="widget">
 				<div id="tabs"></div>
 				<div id="applets"></div>
 			</div>
-		</div>
-		<div id="todo-list" class="widget">
+		</section>
+		<aside id="todo-list" class="widget">
 			<button id="add">+</button>
 			<input type="text" id="input" placeholder="New task..." autocomplete="off" spellcheck="false" />
 			<div id="tasks"></div>
-		</div>
-	</div>
+		</aside>
+	</main>
 
 	<script src="bundle.js" defer></script>
 </body>

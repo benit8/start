@@ -52,48 +52,29 @@ body {
 	font-size: initial;
 }
 
-div {
+div, main, section, aside {
 	display: flex;
 }
 
-
-.cols, .rows {
+main {
 	flex-grow: 1;
+	flex-direction: row;
+
+	@media screen and (orientation: portrait) {
+		flex-direction: column;
+	}
+}
+
+section {
+	flex-grow: 1;
+	flex-direction: column;
+	margin: 1.5em;
 }
 
 .widget {
-	margin: calc(@widget-gap);
+	margin: 1.5em;
 
 	background-color: @widget-bg;
 	border-radius: 4px;
 	box-shadow: 0 0 20px 20px rgba(0,0,0, .25);
-}
-
-@marg: calc(@widget-gap * 2);
-.cols {
-	flex-direction: row;
-
-	& > .widget {
-		margin-top: @marg;
-		margin-bottom: @marg;
-		&:first-of-type { margin-left: @marg; }
-		&:last-of-type { margin-right: @marg; }
-	}
-
-	& > .rows:not(:first-child) { margin-left: -@widget-gap; }
-	& > .rows:not(:last-child) { margin-right: -@widget-gap; }
-}
-
-.rows {
-	flex-direction: column;
-
-	& > .widget {
-		margin-left: @marg;
-		margin-right: @marg;
-		&:first-of-type { margin-top: @marg; }
-		&:last-of-type { margin-bottom: @marg; }
-	}
-
-	& > .cols:not(:first-child) { margin-top: -@widget-gap; }
-	& > .cols:not(:last-child) { margin-bottom: -@widget-gap; }
 }
