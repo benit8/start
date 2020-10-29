@@ -12,8 +12,8 @@ export default class Powerline
 		this.applets = [];
 
 		const $root = document.querySelector(options.selector);
-		this.$applets = $root.querySelector('#applets');
-		this.$tabs    = $root.querySelector('#tabs');
+		this.$applets = $root.querySelector('.applets');
+		this.$tabs    = $root.querySelector('.panel-tabs');
 
 		const applets = JSON.parse(localStorage.applets || '[]');
 		for (const a of applets)

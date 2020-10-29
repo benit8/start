@@ -5,9 +5,9 @@ export default class TodoList
 	constructor(options)
 	{
 		const $root = document.querySelector(options.selector);
-		this.$addButton = $root.querySelector('#add');
-		this.$addInput = $root.querySelector('#input');
-		this.$taskList = $root.querySelector('#tasks');
+		this.$addButton = $root.querySelector('.add-toggler');
+		this.$addInput = $root.querySelector('.add-input');
+		this.$taskList = $root.querySelector('.tasks');
 
 		this.load();
 		this.bindEvents();

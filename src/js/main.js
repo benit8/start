@@ -10,7 +10,7 @@ const pl = new Powerline({
 
 const bs = new Bookshelf({
 	selector: '#bookshelf',
-	panelTabsSelector: '#powerline #tabs'
+	panelTabsSelector: '#powerline .panel-tabs'
 });
 
 
