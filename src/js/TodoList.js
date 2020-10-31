@@ -1,13 +1,23 @@
-import strftime from 'strftime';
+import ContextMenu from './ContextMenu';
+import $           from './utils';
+import strftime    from 'strftime';
 
 export default class TodoList
 {
 	constructor(options)
 	{
-		const $root = document.querySelector(options.selector);
-		this.$addButton = $root.querySelector('.add-toggler');
-		this.$addInput = $root.querySelector('.add-input');
-		this.$taskList = $root.querySelector('.tasks');
+		this.$root = document.querySelector(options.selector);
+		this.$addButton = this.$root.querySelector('.add-toggler');
+		this.$addInput = this.$root.querySelector('.add-input');
+		this.$taskList = this.$root.querySelector('.tasks');
+
+		ContextMenu.registerMenu(this.$root, [
+			{
+				title: 'Add task',
+				icon: 'plus',
+				action: (e) => { e.preventDefault(); this.toggleAdd(); }
+			}
+		]);
 
 		this.load();
 		this.bindEvents();
@@ -49,11 +59,23 @@ export default class TodoList
 		if (typeof task.addedAt === 'number')
 			task.addedAt = new Date(task.addedAt);
 
-		const $task = document.createElement('div');
-		$task.classList.add('task');
+		const $task = $.createElement('.task');
 		$task.classList.toggle('done', task.done);
 		$task.innerHTML = `<button class="remove">&times;</button><p class="title">${task.title}</p><span class="added-at" time="${task.addedAt.getTime()}">${ strftime('%d %b, %H:%M', task.addedAt) }</span>`;
 		this.$taskList.insertAdjacentElement('afterbegin', $task);
+
+		ContextMenu.registerMenu($task, [
+			{
+				title: 'Edit task',
+				icon: 'pen',
+				action: (e) => { e.preventDefault(); }
+			},
+			{
+				title: 'Remove task',
+				icon: 'trash',
+				action: (e) => { e.preventDefault(); }
+			}
+		]);
 
 		this.bindTask($task);
 	}
@@ -62,6 +84,7 @@ export default class TodoList
 	openAdd() {
 		this.$addButton.classList.add('active');
 		this.$addInput.classList.add('active');
+		this.$addInput.focus();
 	}
 
 	closeAdd(clearInputValue = true) {

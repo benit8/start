@@ -1,52 +1,72 @@
-import strftime from 'strftime';
+import ContextMenu from './ContextMenu';
+import $           from './utils';
+import strftime    from 'strftime';
 
 ///////////////////////////////////////////////////////////////////////////////
 
-class DateTime
+class Applet
 {
-	constructor($parent, options) {
-		this.$root = this.createDOMSelf($parent);
+	constructor($parent)
+	{
+		this.$parent = $parent;
+	}
+
+	createDOMSelf($parent)
+	{
+		return $.createElement('.applet', this.$parent);
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+class DateTime extends Applet
+{
+	constructor($parent, options)
+	{
+		super($parent);
+
+		this.$root = this.createDOMSelf();
 		this.options = { format: '%c', ...options };
+
+		ContextMenu.registerMenu(this.$root, [
+			{
+				title: 'Edit format',
+				icon: 'clock',
+				action: (e) => { e.preventDefault(); }
+			}
+		]);
 
 		this.update();
 		this.interval = setInterval(() => { this.update(); }, 999);
 	}
 
-	destructor() {
+	destructor()
+	{
 		clearInterval(this.interval);
 	}
 
-	createDOMSelf($parent) {
-		const $self = document.createElement('div');
-		$self.classList.add('applet');
-		$parent.appendChild($self);
-		return $self;
-	}
-
-	update() {
+	update()
+	{
 		this.$root.innerHTML = strftime(this.options.format);
 	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-class IpAddress
+class IpAddress extends Applet
 {
-	constructor($parent, options) {
-		this.$root = this.createDOMSelf($parent);
+	constructor($parent, options)
+	{
+		super($parent);
+
+		this.$root = this.createDOMSelf();
 		this.options = { token: '', ...options };
 
 		this.fetchData();
 	}
 
-	createDOMSelf($parent) {
-		const $self = document.createElement('div');
-		$self.classList.add('applet');
-		$parent.appendChild($self);
-		return $self;
-	}
-
-	fetchData() {
+	fetchData()
+	{
 		if (this.options.token === '') {
 			this.handleError('No API token');
 			return;
@@ -68,23 +88,28 @@ class IpAddress
 
 ///////////////////////////////////////////////////////////////////////////////
 
-class Weather
+class Weather extends Applet
 {
-	constructor($parent, options) {
-		this.$root = this.createDOMSelf($parent);
+	constructor($parent, options)
+	{
+		super($parent);
+
+		this.$root = this.createDOMSelf();
 		this.options = { appid: '', location: 'Paris', units: 'metric', ...options };
+
+		ContextMenu.registerMenu(this.$root, [
+			{
+				title: 'Edit location',
+				icon: 'compass',
+				action: (e) => { e.preventDefault(); }
+			}
+		]);
 
 		this.fetchData();
 	}
 
-	createDOMSelf($parent) {
-		const $self = document.createElement('div');
-		$self.classList.add('applet');
-		$parent.appendChild($self);
-		return $self;
-	}
-
-	fetchData() {
+	fetchData()
+	{
 		if (this.options.appid === '') {
 			this.handleError('No AppID');
 			return;

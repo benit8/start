@@ -1,11 +1,11 @@
-import Bookshelf from './Bookshelf'
-import Powerline from './Powerline'
-import TodoList from './TodoList'
+import Bookshelf   from './Bookshelf';
+import ContextMenu from './ContextMenu';
+import Powerline   from './Powerline';
+import TodoList    from './TodoList';
 
 
-const pl = new Powerline({
-	selector: '#powerline'
-});
+// Singleton pattern
+ContextMenu.initialize();
 
 
 const bs = new Bookshelf({
@@ -13,7 +13,10 @@ const bs = new Bookshelf({
 	panelTabsSelector: '#powerline .panel-tabs'
 });
 
-
 const tl = new TodoList({
 	selector: '#todo-list'
+});
+
+const pl = new Powerline({
+	selector: '#powerline'
 });

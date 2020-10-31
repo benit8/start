@@ -1,0 +1,58 @@
+#context-menu-overlay {
+	position: absolute;
+	z-index: 99;
+	top: 0; bottom: 0;
+	left: 0; right: 0;
+}
+
+#context-menu {
+	position: absolute;
+	z-index: 100;
+
+	display: block;
+	min-width: 200px;
+	padding: 4px 0;
+
+	background: @widget-bg;
+	border-radius: 4px;
+	box-shadow: 0 0 10px 5px #0008;
+	font-size: 12px;
+
+	ul {
+		margin: 0;
+		padding: 0;
+
+		li {
+			padding: 4px 8px;
+			cursor: pointer;
+
+			&:hover {
+				background-color: lighten(@body-bg, 25%);
+			}
+
+			i {
+				font-style: normal;
+				padding-right: 8px;
+
+				& + a {
+					padding-left: 0;
+				}
+			}
+
+			a {
+				display: inline-block;
+				padding-left: 19px;
+				text-decoration: none;
+			}
+
+			small {
+				float: right;
+				color: #888;
+			}
+		}
+	}
+
+	hr {
+		border-color: #888;
+	}
+}

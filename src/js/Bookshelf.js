@@ -1,3 +1,6 @@
+import ContextMenu from './ContextMenu';
+import $           from './utils';
+
 export default class Bookshelf
 {
 	constructor(options)
@@ -5,8 +8,16 @@ export default class Bookshelf
 		this.options = options;
 		this.currentPanelIndex = 0;
 
-		this.$root = document.querySelector(options.selector);
-		this.$tabs = document.querySelector(options.panelTabsSelector);
+		this.$root = $.qS(options.selector);
+		this.$tabs = $.qS(options.panelTabsSelector);
+
+		ContextMenu.registerMenu(this.$root, [
+			{
+				title: 'Add panel',
+				icon: 'plus',
+				action: (e) => { e.preventDefault(); }
+			}
+		]);
 
 		this.load();
 		this.bindEvents();
@@ -17,49 +28,87 @@ export default class Bookshelf
 	{
 		const panelsData = JSON.parse(localStorage.bookshelf || '[]');
 		for (const panel of panelsData) {
-			const $panel = document.createElement('div');
-			this.$root.appendChild($panel);
-			$panel.classList.add('panel');
-			$panel.style.borderColor = panel.color;
-
-			const $cover = document.createElement('div');
-			$panel.appendChild($cover);
-			$cover.classList.add('cover');
-			$cover.setAttribute('panel-name', panel.name);
-			$cover.style.backgroundImage = `url("${panel.cover}")`;
-
-			const $shelves = document.createElement('div');
-			$panel.appendChild($shelves);
-			$shelves.classList.add('shelves');
-
-			for (const shelf of panel.shelves) {
-				const $shelf = document.createElement('div');
-				$shelves.appendChild($shelf);
-				$shelf.classList.add('shelf');
-
-				if (shelf.title) {
-					const $title = document.createElement('h1');
-					$shelf.appendChild($title);
-					$title.innerText = shelf.title;
+			const $panel = $.createElement('.panel', this.$root, {
+				style: {
+					borderColor: panel.color
 				}
+			});
+
+			ContextMenu.registerMenu($panel, [
+				{
+					title: 'Add shelf',
+					icon: 'plus',
+					action: (e) => { e.preventDefault(); }
+				},
+				{
+					title: 'Edit panel',
+					icon: 'pen',
+					action: (e) => { e.preventDefault(); }
+				},
+				{
+					title: 'Remove panel',
+					icon: 'trash',
+					action: (e) => { e.preventDefault(); }
+				}
+			]);
+
+			const $cover = $.createElement(`.cover[panel-name="${panel.name}"]`, $panel, {
+				style: {
+					backgroundImage: `url("${panel.cover}")`
+				}
+			});
+
+			const $shelves = $.createElement('.shelves', $panel);
+			for (const shelf of panel.shelves) {
+				const $shelf = $.createElement('.shelf', $shelves);
+
+				ContextMenu.registerMenu($shelf, [
+					{
+						title: 'Add link',
+						icon: 'plus',
+						action: (e) => { e.preventDefault(); }
+					},
+					{
+						title: 'Edit shelf',
+						icon: 'pen',
+						action: (e) => { e.preventDefault(); }
+					},
+					{
+						title: 'Remove shelf',
+						icon: 'trash',
+						action: (e) => { e.preventDefault(); }
+					}
+				]);
+
+				if (shelf.title)
+					$.createElement(`h1{${shelf.title}}`, $shelf);
 
 				for (const link of shelf.links) {
-					const $link = document.createElement('a');
-					$shelf.appendChild($link);
-					$link.setAttribute('href', link.href);
-					$link.innerText = link.title;
+					const $link = $.createElement(`a[href="${link.href}"]`, $shelf, { innerText: link.title });
+
+					ContextMenu.registerMenu($link, [
+						{
+							title: 'Edit link',
+							icon: 'pen',
+							action: (e) => { e.preventDefault(); }
+						},
+						{
+							title: 'Remove link',
+							icon: 'trash',
+							action: (e) => { e.preventDefault(); }
+						}
+					]);
 				}
 			}
 
-			const $tab = document.createElement('span');
-			this.$tabs.appendChild($tab);
+			$.createElement('span', this.$tabs);
 		}
 	}
 
 	togglePanel(index)
 	{
 		if (index >= this.$root.childElementCount) {
-			console.warn(`Out of range panel index: ${index}/${this.$root.childElementCount}`);
+			console.warn(`Out of range panel index: ${index} >= ${this.$root.childElementCount}`);
 			return;
 		}
 

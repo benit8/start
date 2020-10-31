@@ -1,4 +1,5 @@
 import * as Applets from './Applets';
+import ContextMenu  from './ContextMenu';
 
 export default class Powerline
 {
@@ -11,9 +12,17 @@ export default class Powerline
 		};
 		this.applets = [];
 
-		const $root = document.querySelector(options.selector);
-		this.$applets = $root.querySelector('.applets');
-		this.$tabs    = $root.querySelector('.panel-tabs');
+		this.$root = document.querySelector(options.selector);
+		this.$applets = this.$root.querySelector('.applets');
+		this.$tabs    = this.$root.querySelector('.panel-tabs');
+
+		ContextMenu.registerMenu(this.$root, [
+			{
+				title: 'Add applet',
+				icon: 'plus',
+				action: (e) => { e.preventDefault(); }
+			}
+		]);
 
 		const applets = JSON.parse(localStorage.applets || '[]');
 		for (const a of applets)
@@ -27,5 +36,13 @@ export default class Powerline
 
 		const applet = new (this.appletTypes[appletData.type])(this.$applets, appletData);
 		this.applets.push(applet);
+
+		ContextMenu.registerMenu(this.$applets.lastElementChild, [
+			{
+				title: 'Remove applet',
+				icon: 'trash',
+				action: (e) => { e.preventDefault(); }
+			}
+		]);
 	}
 }

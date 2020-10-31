@@ -14,6 +14,7 @@ Heavily inspired from [dawn](https://github.com/0-l/dawn)
 		- [x] Weather
 		- [x] IP address
 - [x] Todo list
+- [x] Custom context menu
 - [ ] Command line
 	- [ ] Search (w/ customs engines)
 	- [ ] Edit bookshelfs
