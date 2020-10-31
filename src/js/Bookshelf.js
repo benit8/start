@@ -127,7 +127,7 @@ export default class Bookshelf
 
 	bindEvents()
 	{
-		this.$root.onmousewheel = (e) => {
+		this.$root.addEventListener('mousewheel', (e) => {
 			if (e.deltaX !== 0) {
 				e.preventDefault();
 
@@ -137,14 +137,14 @@ export default class Bookshelf
 					nextPanelIndex += this.$root.childElementCount;
 				this.togglePanel(nextPanelIndex);
 			}
-		};
+		});
 
 		for (const tab of this.$tabs.children) {
-			tab.onclick = (e) => {
+			tab.addEventListener('click', (e) => {
 				e.preventDefault();
 				const index = Array.prototype.indexOf.call(this.$tabs.children, tab);
 				this.togglePanel(index);
-			};
+			});
 		}
 	}
 }

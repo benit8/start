@@ -103,14 +103,14 @@ export default class TodoList
 	/// DOM events bindings
 	bindEvents()
 	{
-		this.$addButton.onclick = (e) => {
+		this.$addButton.addEventListener('click', (e) => {
 			e.preventDefault();
 
 			this.toggleAdd();
 			this.$addInput.focus();
-		};
+		});
 
-		this.$addInput.onkeydown = (e) => {
+		this.$addInput.addEventListener('keydown', (e) => {
 			switch (e.keyCode) {
 				case 13:
 					const task = e.target.value;
@@ -126,25 +126,25 @@ export default class TodoList
 				default:
 					break;
 			}
-		};
+		});
 
 		/*
-		this.$addInput.onblur = (e) => {
+		this.$addInput.addEventListener('blur', (e) => {
 			this.closeAdd(false);
-		};
+		});
 		*/
 	}
 
 	bindTask($el)
 	{
-		$el.onclick = (e) => {
+		$el.addEventListener('click', (e) => {
 			$el.classList.toggle('done');
 			this.save();
-		};
+		});
 
-		$el.querySelector('.remove').onclick = (e) => {
+		$el.querySelector('.remove').addEventListener('click', (e) => {
 			$el.remove();
 			this.save();
-		};
+		});
 	}
 }

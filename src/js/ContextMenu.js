@@ -30,7 +30,7 @@ export default class ContextMenu
 		// Create a DOM element representing a context menu, with initial settings and position
 		const createMenu = (settings, pos) => {
 			const $overlay = $.createElement('#context-menu-overlay', document.body);
-			$overlay.onclick = (e) => $overlay.remove();
+			$overlay.addEventListener('click', (e) => $overlay.remove());
 
 			const $menu = $.createElement('#context-menu', $overlay);
 			appendToMenu($menu, settings);
