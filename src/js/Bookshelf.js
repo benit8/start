@@ -84,7 +84,9 @@ export default class Bookshelf
 					$.createElement(`h1{${shelf.title}}`, $shelf);
 
 				for (const link of shelf.links) {
-					const $link = $.createElement(`a[href="${link.href}"]`, $shelf, { innerText: link.title });
+					const $link = $.createElement(`a[href="${link.href}"]`, $shelf, {
+						innerHTML: `<img src="chrome://favicon/${link.href}" /> ${link.title}`
+					});
 
 					ContextMenu.registerMenu($link, [
 						{

@@ -4,7 +4,8 @@
   "description": "Startpage",
   "version": "1.0",
   "permissions": [
-    "activeTab"
+    "activeTab",
+    "chrome://favicon/"
   ],
   "chrome_url_overrides" : {
     "newtab": "dist/index.html"
