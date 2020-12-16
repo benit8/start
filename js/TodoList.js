@@ -1,30 +1,85 @@
-import ContextMenu from './ContextMenu';
-import $           from './utils';
-import strftime    from 'strftime';
+import CommandLine from './CommandLine.js';
+import ContextMenu from './ContextMenu.js';
+import $           from './utils.js';
 
 export default class TodoList
 {
 	constructor(options)
 	{
+		this.tasks = [];
 		this.$root = document.querySelector(options.selector);
 		this.$addButton = this.$root.querySelector('.add-toggler');
 		this.$addInput = this.$root.querySelector('.add-input');
 		this.$taskList = this.$root.querySelector('.tasks');
 
+		CommandLine.registerCommand('todo', { commands: {
+			add: {
+				arguments: [
+					{ name: 'title', required: true },
+				],
+				action: (opts, args) => {
+					this.addTask({ title: args.title });
+					this.save();
+					return true;
+				}
+			},
+			edit: {
+				arguments: [
+					{ name: 'id', required: true },
+					{ name: 'title', required: true },
+				],
+				action: (opts, args) => {
+					const id = parseInt(args.id);
+					// this.tasks[id].title = args.title;
+					this.$taskList.children[id].querySelector('.title').innerHTML = args.title;
+					this.save();
+					return true;
+				}
+			},
+			done: {
+				arguments: [
+					{ name: 'id', required: true },
+				],
+				action: (opts, args) => {
+					const id = parseInt(args.id);
+					// this.tasks[id].done = !this.tasks[id].done;
+					const classList = this.$taskList.children[id].classList;
+					classList.toggle('done', !classList.contains('done'));
+					this.save();
+					return true;
+				}
+			},
+			remove: {
+				arguments: [
+					{ name: 'id', required: true },
+				],
+				action: (opts, args) => {
+					const id = parseInt(args.id);
+					this.tasks.splice(id, 1);
+					this.$taskList.children[id].remove();
+					this.save();
+					return true;
+				}
+			}
+		} });
+
 		ContextMenu.registerMenu(this.$root, [
 			{
 				title: 'Add task',
 				icon: 'plus',
-				action: (e) => { e.preventDefault(); this.toggleAdd(); }
+				action: (e) => {
+					this.openAddInput();
+					this.$addInput.focus();
+				}
 			}
 		]);
 
-		this.load();
+		this.loadTasks();
 		this.bindEvents();
 	}
 
 	/// Saving & loading
-	load()
+	loadTasks()
 	{
 		const tasksJson = localStorage.tasks || '[]';
 		const tasks = JSON.parse(tasksJson);
@@ -56,7 +111,7 @@ export default class TodoList
 		task.addedAt ??= new Date;
 		task.done    ??= false;
 
-		if (typeof task.addedAt === 'number')
+		if (typeof task.addedAt !== 'object')
 			task.addedAt = new Date(task.addedAt);
 
 		const $task = $.createElement('.task');
@@ -68,26 +123,36 @@ export default class TodoList
 			{
 				title: 'Edit task',
 				icon: 'pen',
-				action: (e) => { e.preventDefault(); }
+				action: (e, $target) => {
+					const itemIndex = Array.prototype.indexOf.call($target.parentElement.children, $target);
+					const content = $target.querySelector('.title').innerHTML;
+					const command = `todo edit ${itemIndex} "${content}"`;
+					const selection = {start: command.length - content.length - 1, length: content.length};
+					CommandLine.open(command, selection);
+				}
 			},
 			{
 				title: 'Remove task',
 				icon: 'trash',
-				action: (e) => { e.preventDefault(); }
+				action: (e, $target) => {
+					$target.remove();
+					this.save();
+				}
 			}
 		]);
 
 		this.bindTask($task);
+		this.tasks.push(task);
 	}
 
 	/// Controls
-	openAdd() {
+	openAddInput() {
 		this.$addButton.classList.add('active');
 		this.$addInput.classList.add('active');
 		this.$addInput.focus();
 	}
 
-	closeAdd(clearInputValue = true) {
+	closeAddInput(clearInputValue = true) {
 		this.$addButton.classList.remove('active');
 		this.$addInput.classList.remove('active');
 
@@ -95,7 +160,7 @@ export default class TodoList
 			this.$addInput.value = '';
 	}
 
-	toggleAdd() {
+	toggleAddInput() {
 		this.$addButton.classList.toggle('active');
 		this.$addInput.classList.toggle('active');
 	}
@@ -105,14 +170,13 @@ export default class TodoList
 	{
 		this.$addButton.addEventListener('click', (e) => {
 			e.preventDefault();
-
-			this.toggleAdd();
+			this.toggleAddInput();
 			this.$addInput.focus();
 		});
 
 		this.$addInput.addEventListener('keydown', (e) => {
 			switch (e.keyCode) {
-				case 13:
+				case 13: // Return
 					const task = e.target.value;
 					if (task.length === 0)
 						return;
@@ -120,19 +184,17 @@ export default class TodoList
 					this.save();
 					e.target.value = '';
 					break;
-				case 27:
-					this.closeAdd();
+				case 27: // Escape
+					this.closeAddInput();
 					break;
 				default:
 					break;
 			}
 		});
 
-		/*
-		this.$addInput.addEventListener('blur', (e) => {
-			this.closeAdd(false);
-		});
-		*/
+		/* this.$addInput.addEventListener('blur', (e) => {
+			this.closeAddInput(false);
+		}); */
 	}
 
 	bindTask($el)

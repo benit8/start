@@ -1,25 +1,30 @@
 # start
-A complete startpage
+A complete startpage.
+
+![start](meta/0.png)
 
 Heavily inspired from [dawn](https://github.com/0-l/dawn)
 
 ## Features
-- [x] Bookshelf
-	- [x] Loading from `localStorage`
-	- [ ] Dynamic editing; saving to `localStorage`
-- [x] Powerline
-	- [x] Bookshelf's panel tabs
-	- [x] Applets
-		- [x] Date & time
-		- [x] Weather
-		- [x] IP address
-- [x] Todo list
-- [x] Custom context menu
-- [ ] Command line
-	- [ ] Search (w/ customs engines)
-	- [ ] Edit bookshelfs
-	- [ ] Edit applets options
-	- [ ] Auto complete
+- Bookshelf
+	- Loading from/saving to `localStorage`
+	- *[WIP]* Dynamic editing
+- Powerline
+	- Bookshelf's panel tabs
+	- Applets
+		- Date & time
+		- Weather
+		- IP address
+	- Inline applet editing
+- Todo list
+	- Add & remove tasks
+	- Set tasks to done/undone
+- Custom context menu
+- Command line
+	- Parse and execute commands and sub-commands
+	- *[WIP]* Dynamically autocomplete commands
+	- Search (w/ customs engines)
+	- Manage panels, applets, todos
 
 ## Keybindings
 - `Mouse wheel X-axis` Go to next/previous panel

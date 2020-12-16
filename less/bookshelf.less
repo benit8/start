@@ -4,6 +4,17 @@
 
 	overflow: hidden;
 
+	input {
+		background: none;
+		border: none;
+		border-bottom: 1px solid #555;
+		outline: none;
+
+		&:focus {
+			border-bottom: 1px solid #fff;
+		}
+	}
+
 	.panel {
 		position: absolute;
 		right: 100%;
@@ -24,7 +35,7 @@
 			width: 300px;
 			height: 100%;
 
-			background-color: #fff;
+			background-color: #777;
 			background-repeat: no-repeat;
 			background-position: center;
 			background-size: cover;
@@ -37,7 +48,7 @@
 				margin: auto;
 				padding: 2em 1em;
 
-				content: attr(panel-name);
+				content: attr(panel-title);
 				text-transform: uppercase;
 				overflow-wrap: break-word;
 				background: rgba(0, 0, 0, .4);
@@ -62,13 +73,22 @@
 			padding: 3em;
 			overflow-y: auto;
 
+			button.add {
+				background: transparent;
+				border: none;
+				font-size: 24px;
+				color: #777;
+				cursor: pointer;
+			}
+
 			.shelf {
 				display: block;
 				margin-bottom: 1.5em;
 				padding-bottom: .5em;
 				box-shadow: 0 1px 0 rgba(255, 255, 255, .07);
 
-				h1 {
+				h1, input.shelf-title {
+					display: block;
 					margin-top: 0;
 					margin-bottom: .5em;
 					font-size: 22px;
@@ -91,16 +111,14 @@
 					text-decoration: none;
 
 					transition: color .2s, transform .1s;
-
-					&:not(:last-child) {
-						margin-right: .4em;
-					}
+					&:not(:last-child) { margin-right: .4em; }
 
 					&:hover {
 						color: #fff;
 					}
 
 					&:focus {
+						outline: none;
 						box-shadow: 0 3px #afafaf, 0 5px 10px #0008;
 					}
 
@@ -110,9 +128,38 @@
 					}
 
 					img {
+						width: 16px;
 						height: 16px;
-						margin: -4px 2px 0 0;
+						margin: 0 0 -1px 0;
+					}
+				}
+
+				span.link-editor {
+					display: inline-block;
+					margin-bottom: .5em;
+					padding: .4em .6em .6em;
+					background: #0003;
+					border-radius: 2px;
+					vertical-align: middle;
+					box-shadow: 2px 2px #2b2b2b, 0 5px 10px #0008;
+					&:not(:last-child) { margin-right: .6em; }
+
+					img {
+						width: 16px;
+						height: 16px;
+						margin: 0 2px;
 						vertical-align: middle;
+					}
+
+					input.link-title {
+						display: inline-block;
+						margin: 2px;
+					}
+
+					input.link-href {
+						display: block;
+						width: 100%;
+						margin-top: 4px;
 					}
 				}
 			}

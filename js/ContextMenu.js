@@ -1,4 +1,4 @@
-import $ from './utils';
+import $ from './utils.js';
 
 export default class ContextMenu
 {
@@ -18,8 +18,6 @@ export default class ContextMenu
 
 	static handleContextMenuEvent(e)
 	{
-		e.preventDefault();
-
 		// Check if a context menu is already open
 		const $existingOverlay = $.qS('#context-menu-overlay');
 		if ($existingOverlay !== null) {
@@ -28,17 +26,15 @@ export default class ContextMenu
 		}
 
 		// Create a DOM element representing a context menu, with initial settings and position
-		const createMenu = (settings, pos) => {
+		const createMenu = (settings) => {
 			const $overlay = $.createElement('#context-menu-overlay', document.body);
 			$overlay.addEventListener('click', (e) => $overlay.remove());
 
-			const $menu = $.createElement('#context-menu', $overlay);
-			appendToMenu($menu, settings);
-			return $menu;
+			return $.createElement('#context-menu', $overlay);
 		};
 
 		// Add a separated sub-menu to an existing context menu
-		const appendToMenu = ($menu, settings) => {
+		const appendToMenu = ($menu, settings, $target) => {
 			if ($menu.childElementCount > 0) {
 				$.createElement('hr', $menu);
 			}
@@ -46,19 +42,25 @@ export default class ContextMenu
 			const $list = $.createElement('ul', $menu);
 
 			for (const action of settings) {
-				const $listItem = $.createElement('li', $list);
+				const $listItem = $.createElement('li', $list, {
+					onclick: (e) => {
+						e.preventDefault();
+						action.action(e, $target);
+					}
+				});
 
 				if (action.hasOwnProperty('icon'))
 					$listItem.appendChild($.icon(action.icon));
 
-				$.createElement(`a{${action.title}}`, $listItem, { onclick: action.action });
+				$.createElement(`a{${action.title}}`, $listItem);
 			}
 		};
 
 		let $contextMenu = null;
 
 		// Going through the path of elements and appending mathing one's menus
-		for (const $el of e.path) {
+		const path = e.path || (e.composedPath && e.composedPath());
+		for (const $el of path) {
 			const contextSettings = ContextMenu.elementsContext.get($el);
 			if (contextSettings === undefined)
 				continue;
@@ -66,13 +68,15 @@ export default class ContextMenu
 			// One element matched
 			if ($contextMenu === null)
 				$contextMenu = createMenu(contextSettings);
-			else
-				appendToMenu($contextMenu, contextSettings);
+
+			appendToMenu($contextMenu, contextSettings, $el);
 		}
 
 		// No context menu could be created for the targeted element(s)
 		if ($contextMenu === null)
 			return;
+
+		e.preventDefault();
 
 		let posX = e.x, posY = e.y;
 		if (posX > window.innerWidth - $contextMenu.clientWidth)
