@@ -2,6 +2,9 @@ const $ = {
 	qS: e => document.querySelector(e),
 	qA: e => document.querySelectorAll(e),
 
+	/**
+	 * Quickly creates an Element
+	 */
 	createElement: (selector, $parent = null, props = {}, children = []) => {
 		const parts = selector.match(/^([a-z0-9]+)?(#[a-z][a-z0-9-]*)?((?:\.[a-z][a-z0-9-]*)*)((?:\[[a-z][a-z0-9-]*(?:=['"]?[^\]]+['"]?)?\])*)(\{[^\}]+\})?$/i);
 		if (!parts) {
@@ -48,10 +51,16 @@ const $ = {
 		return $el;
 	},
 
+	/**
+	 * Quickly creates an icon Element
+	 */
 	icon: (name, style = 'fa') => {
 		return $.createElement(`i.${style}.fa-${name}`);
 	},
 
+	/**
+	 * Merge two objects
+	 */
 	merge: (dest, ...args) => {
 		const isObject = (o) => o && typeof o === 'object' && !Array.isArray(o);
 
@@ -72,6 +81,36 @@ const $ = {
 		}
 
 		return $.merge(dest, ...args);
+	},
+
+	/**
+	 * Puts an <input /> in the place of the content.
+	 * When Enter is pressed, the value gets resolved.
+	 * When Escape is pressed, the value gets rejected.
+	 */
+	transformToTextarea: ($el, value = '') => {
+		return new Promise((resolve, reject) => {
+			// What will happen when the textarea's job is done.
+			const restore = (decision, ...decisionParams) => {
+				$el.classList.toggle('hidden');
+				$input.remove();
+				decision(...decisionParams);
+			};
+
+			$el.classList.toggle('hidden');
+
+			const $input = $.createElement('textarea', null, { spellcheck: false, value: value });
+			$input.addEventListener('keydown', (e) => {
+				if (e.key === 'Escape')
+					restore(reject);
+				else if (e.key === 'Enter' && !e.shiftKey)
+					restore(resolve, $input.value);
+			});
+
+			$el.after($input);
+			$input.focus();
+			$input.setSelectionRange(0, value.length);
+		});
 	}
 };
 

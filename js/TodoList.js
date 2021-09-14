@@ -71,6 +71,14 @@ export default class TodoList
 					this.openAddInput();
 					this.$addInput.focus();
 				}
+			},
+			{
+				title: 'Clear tasks',
+				icon: 'trash',
+				action: (e) => {
+					this.$tasks.innerHTML = '';
+					this.save();
+				}
 			}
 		]);
 
@@ -124,11 +132,13 @@ export default class TodoList
 				title: 'Edit task',
 				icon: 'pen',
 				action: (e, $target) => {
-					const itemIndex = Array.prototype.indexOf.call($target.parentElement.children, $target);
-					const content = $target.querySelector('.title').innerHTML;
-					const command = `todo edit ${itemIndex} "${content}"`;
-					const selection = {start: command.length - content.length - 1, length: content.length};
-					CommandLine.open(command, selection);
+					const $title = $target.querySelector('.title');
+					$.transformToTextarea($title, $title.innerHTML)
+						.then((newContent) => {
+							$title.innerHTML = newContent;
+							this.save();
+						})
+					.catch(() => { /* pass */ })
 				}
 			},
 			{
@@ -200,6 +210,10 @@ export default class TodoList
 	bindTask($el)
 	{
 		$el.addEventListener('click', (e) => {
+			// Special case for when editing a task
+			if (e.target.tagName === 'TEXTAREA')
+				return;
+
 			$el.classList.toggle('done');
 			this.save();
 		});
