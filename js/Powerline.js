@@ -53,7 +53,7 @@ export default class Powerline
 						weather: {
 							arguments: [
 								{ name: 'appid', required: true },
-								{ name: 'location' },
+								{ name: 'location', required: true },
 							],
 							options: [
 								{ long: 'units', description: 'Unit in which to display the temperatures.', value: { required: true } }
@@ -97,7 +97,7 @@ export default class Powerline
 				action: (e, $target) => {
 					const index = Array.from(this.$applets.children).indexOf($target);
 					this.applets.splice(index, 1); // Remove from member data
-					$target.remove();              // Remove from DOM
+					$target.remove(); // Remove from DOM
 					this.save();
 				}
 			}
